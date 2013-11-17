@@ -2,15 +2,21 @@ source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.0.1'
-gem 'rspec'
-gem 'rspec-rails'
+
+group :development, :test do
+  gem 'rspec'
+  gem 'rspec-rails'
+  gem 'sqlite3'
+end
+
 gem 'tesseract-ocr'
 gem 'pdf-reader'
 
 gem "twitter-bootstrap-rails"
 
-# Use sqlite3 as the database for Active Record
-gem 'sqlite3'
+group :production do
+  gem 'pg'
+end
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.0'
