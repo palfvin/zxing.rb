@@ -15,5 +15,3 @@
 /log/*.log
 /tmp
 
-# ignore pdf folder for now
-/pdf
