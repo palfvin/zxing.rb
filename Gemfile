@@ -9,7 +9,7 @@ group :development, :test do
   gem 'sqlite3'
 end
 
-gem 'tesseract-ocr'
+# gem 'tesseract-ocr'
 gem 'pdf-reader'
 
 gem "twitter-bootstrap-rails"
