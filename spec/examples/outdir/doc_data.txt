@@ -1,0 +1,68 @@
+InfoBegin
+InfoKey: Creator
+InfoValue: Sejda (Ver. 1.0.0.M7)
+InfoBegin
+InfoKey: Title
+InfoValue: Invoice-Cover
+InfoBegin
+InfoKey: Producer
+InfoValue: GPL Ghostscript 9.10
+InfoBegin
+InfoKey: ModDate
+InfoValue: D:20131120225914-08'00'
+InfoBegin
+InfoKey: CreationDate
+InfoValue: D:20131120225914-08'00'
+PdfID0: 4020b38be4ebf0c78392be7fc9f7ad8d
+PdfID1: 4020b38be4ebf0c78392be7fc9f7ad8d
+NumberOfPages: 10
+PageMediaBegin
+PageMediaNumber: 1
+PageMediaRotation: 0
+PageMediaRect: 0 0 1700 200
+PageMediaDimensions: 1700 200
+PageMediaBegin
+PageMediaNumber: 2
+PageMediaRotation: 0
+PageMediaRect: 0 0 1700 200
+PageMediaDimensions: 1700 200
+PageMediaBegin
+PageMediaNumber: 3
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 4
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 5
+PageMediaRotation: 0
+PageMediaRect: 0 0 1700 200
+PageMediaDimensions: 1700 200
+PageMediaBegin
+PageMediaNumber: 6
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 7
+PageMediaRotation: 0
+PageMediaRect: 0 0 1700 200
+PageMediaDimensions: 1700 200
+PageMediaBegin
+PageMediaNumber: 8
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
+PageMediaBegin
+PageMediaNumber: 9
+PageMediaRotation: 0
+PageMediaRect: 0 0 1700 200
+PageMediaDimensions: 1700 200
+PageMediaBegin
+PageMediaNumber: 10
+PageMediaRotation: 0
+PageMediaRect: 0 0 612 792
+PageMediaDimensions: 612 792
