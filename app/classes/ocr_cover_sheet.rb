@@ -28,7 +28,26 @@ class OCRCoverSheet < CoverSheet ; class << self
     filename
   end
 
+  def decode_pdf_page(pdf_filename, normalize: false)
+    tiff_filename = CoverSheet.tmpfile('.tiff', 'page')
+    PDFHelper.convert_pdf_to_single_tiff(pdf_filename, tiff_filename)
+    text = ocr_tiff(tiff_filename)
+    binding.pry if !text || text.empty?
+    normalize ? CoverSheet.normalize_cover_text(text) : text
+  end
+
+  def decode_tiff_page(tiff_filename, normalize: false)
+    text_file_basename = CoverSheet.tmpfile('', 'ocrtext')
+    binding.pry unless PDFHelper.exec_command([tesseract, tiff_filename, text_file_basename, 'alphanumeric', '2> /dev/null'])
+    text = File.read(text_file_basename+'.txt')
+    normalize ? CoverSheet.normalize_cover_text(text) : text
+  end
+
+  alias_method :ocr_tiff, :decode_tiff_page
+
   private
+
+  def tesseract ; '/usr/local/bin/tesseract' ; end
 
   def create_image
     Image.new(1700, 200) { self.background_color = "white" }

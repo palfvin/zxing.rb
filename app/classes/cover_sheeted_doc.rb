@@ -6,7 +6,7 @@ class CoverSheetedDoc
     @filename = filename
     @cover_sheet_pattern = cover_sheet_pattern
     @pdf_helper = pdf_helper
-    @sheets = pdf_helper.ocr_pdf(filename, normalize: false)
+    @sheets = DefaultCoverSheet.decode_pdf(filename, normalize: false)
     calc_sets
   end
 

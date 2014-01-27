@@ -1,1 +1,1 @@
-DefaultCoverSheet = OCRCoverSheet
+DefaultCoverSheet = QRCoverSheet

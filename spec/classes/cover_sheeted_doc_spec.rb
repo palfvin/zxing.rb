@@ -17,7 +17,7 @@ describe "sheet processor" do
     pdf_filename = "mytemp_pdf"
     pdf_helper = double("pdf_helper")
     set_proc = -> {}
-    allow(pdf_helper).to receive(:ocr_pdf).and_return(doc_sheets)
+    allow(DefaultCoverSheet).to receive(:decode_pdf).and_return(doc_sheets)
     sets.each do |index, range|
       dummy_pdf = range ? "#{range}.pdf" : nil
       expect(pdf_helper).to receive(:extract_pdf).with(pdf_filename, range).and_return(dummy_pdf) if range
@@ -45,10 +45,10 @@ describe "sheet processor" do
       set = sets.shift
       CoverSheet.normalized_eql(text, CoverSheet.text_from_cover(doc_sheets[set[0]]))
       if set[1]
-        ocr_results = PDFHelper.ocr_pdf(pdf, normalize: true)
+        decode_results = DefaultCoverSheet.decode_pdf(pdf, normalize: true)
         expected_results = set[1].map {|i| page_text.(i)}
-        binding.pry unless pdf && ocr_results == expected_results
-        expect(ocr_results).to eql(expected_results)
+        binding.pry unless pdf && decode_results == expected_results
+        expect(decode_results).to eql(expected_results)
       else expect(pdf).to be nil
       end
     end

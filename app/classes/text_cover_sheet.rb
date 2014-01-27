@@ -1,1 +1,1 @@
-TextCoverSheet = OCRCoverSheet
+TextCoverSheet = QRCoverSheet

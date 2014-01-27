@@ -10,49 +10,39 @@ class PDFHelper
 
   def pdftk ; '/usr/local/bin/pdftk' ; end
 
-  def tesseract ; '/usr/local/bin/tesseract' ; end
+  def gs ; '/opt/local/bin/gs' ; end
 
   def exec_command(command)
     command = command.join(' ') if command.kind_of?(Array)
-    puts command
     binding.pry unless result = Kernel.system(command)
     result
   end
 
-  def ocr_tiff(tiff_filename, normalize: false)
-    text_file_basename = CoverSheet.tmpfile('', 'ocrtext')
-    binding.pry unless exec_command([tesseract, tiff_filename, text_file_basename, 'alphanumeric', '2> /dev/null'])
-    text = File.read(text_file_basename+'.txt')
-    normalize ? CoverSheet.normalize_cover_text(text) : text
-  end
-
-  def convert_tiff_to_pdf(tiff_filename, pdf_filename)
+  def convert_tiff_to_pdf(tiff_filename, pdf_filename = CoverSheet.tmpfile('.pdf'))
     exec_command([convert, tiff_filename, pdf_filename])
+    pdf_filename
   end
 
-  def convert_pdf_to_single_tiff(pdf_filename, tiff_filename)
+  def convert_pdf_to_single_tiff(pdf_filename, tiff_filename = CoverSheet.tmpfile('.tiff'))
     exec_command([convert, pdf_filename, '-monochrome -compress Group4', tiff_filename])
+    tiff_filename
+  end
+
+  def convert_pdf_to_png(pdf_filename, png_filename, rotation = 0)  # rotation doesn't work!!!
+    options = "-dSAFER -dBATCH -dNOPAUSE -r200 -sDEVICE=pngmono -dAutoRotatePages=/None"
+    code = %Q(-c "<</Orientation 2>>" setpagedevice #{rotation} rotate)
+    exec_command([gs, options, "-sOutputFile=#{png_filename}", code, "-f #{pdf_filename}"])
+    png_filename
+  end
+
+  def convert_png_to_rotated_png(input_png, output_png, rotation)
+    Magick::Image.read(input_png)[0].rotate(rotation).write(output_png)
   end
 
   def merge_pdf_files(input_files, output_file = CoverSheet.tmpfile('.pdf'))
     command = (["gs -q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -sOutputFile=#{output_file}"]+input_files)
     exec_command(command)
     output_file
-  end
-
-  def ocr_pdf(pdf_filename, ocr_filesize_threshold: 2000, normalize: false)
-    pdf_filenames = burst_pdf_file(pdf_filename)
-    pdf_filenames.each_with_index.map do |pdf_filename, i|
-      tiff_filename = CoverSheet.tmpfile('.tiff', 'page')
-      puts tiff_filename
-      convert_pdf_to_single_tiff(pdf_filename, tiff_filename)
-      if File.size?(tiff_filename) < ocr_filesize_threshold
-        text = ocr_tiff(tiff_filename)
-        binding.pry if !text || text.empty?
-        text = CoverSheet.normalize_cover_text(text) if normalize
-        text
-      end
-    end
   end
 
   def burst_pdf_file(pdf_filename, output_dir = nil)

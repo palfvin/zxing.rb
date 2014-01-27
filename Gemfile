@@ -4,12 +4,18 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.1'
 gem 'google_drive'
 gem 'rmagick', require: false
+gem 'qrio'
+gem 'zxing'
+gem 'jruby-jars'
 
 group :development, :test do
   gem 'sqlite3'
   gem 'pry'
-  gem 'pry-debugger'
+  gem 'pry-byebug'
   gem 'pry-stack_explorer'
+  gem 'rqrcode'
+  gem 'prawn'
+  gem 'prawn-qrcode'
 end
 
 group :test do
@@ -19,7 +25,6 @@ group :test do
   gem 'database_cleaner'
   gem 'selenium-webdriver'
 end
-
 
 # gem 'tesseract-ocr'
 gem 'pdf-reader'
