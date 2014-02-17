@@ -1,4 +1,5 @@
 require 'uri'
+require 'pry'
 
 module ZXing
   if RUBY_PLATFORM != 'java'
@@ -19,18 +20,24 @@ module ZXing
 
     java_import javax.imageio.ImageIO
     java_import java.net.URL
+    java_import java.awt.geom.AffineTransform
+    java_import java.awt.image.AffineTransformOp
+    java_import java.awt.image.BufferedImage
 
     class Decoder
-      attr_accessor :file
+      attr_accessor :file, :options, :image, :retry_count
 
-      def self.decode!(file)
-        new(file).decode
+      MAX_RETRIES = 3
+      ROTATION_INCREMENT = 5
+
+      def self.decode!(file, options = nil)
+        new(file, options).decode
       rescue NativeException
         raise UndecodableError
       end
 
-      def self.decode(file)
-        decode!(file)
+      def self.decode(file, options = nil)
+        decode!(file, options)
       rescue UndecodableError
         nil
       end
@@ -47,8 +54,10 @@ module ZXing
         []
       end
 
-      def initialize(file)
+      def initialize(file, options = nil)
         self.file = file
+        self.options = options || {}
+        self.retry_count = 0
       end
 
       def reader
@@ -56,7 +65,20 @@ module ZXing
       end
 
       def decode
+        if options[:rotate_and_retry_on_failure]
+          decode_with_retry
+        else
+          reader.decode(bitmap).to_s
+        end
+      end
+
+      def decode_with_retry
         reader.decode(bitmap).to_s
+      rescue com.google.zxing.NotFoundException
+        puts "Failed on try #{retry_count}"
+        self.retry_count += 1
+        retry if retry_count <= MAX_RETRIES
+        raise com.google.zxing.NotFoundException
       end
 
       def decode_all
@@ -73,10 +95,6 @@ module ZXing
         BinaryBitmap.new(binarizer)
       end
 
-      def image
-        ImageIO.read(io)
-      end
-
       def io
         if file =~ URI.regexp(['http', 'https'])
           URL.new(file)
@@ -87,11 +105,40 @@ module ZXing
       end
 
       def luminance
-        BufferedImageLuminanceSource.new(image)
+        BufferedImageLuminanceSource.new(rotated)
       end
 
       def binarizer
         GlobalHistogramBinarizer.new(luminance)
+      end
+
+      def rotated
+        return buffered unless retry_count > 0
+        op = AffineTransformOp.new(transformation, AffineTransformOp::TYPE_NEAREST_NEIGHBOR)
+        op.java_send(:filter, [BufferedImage, BufferedImage], buffered, nil)
+      end
+
+      def buffered
+        unless image
+          self.image = ImageIO.read(io)
+          self.image = cropped(options[:crop]) if options[:crop]
+        end
+        image
+      end
+
+      def transformation
+        width = buffered.getWidth
+        height = buffered.getHeight
+        hypot = java.lang.Math.hypot(width, height)
+        transform = AffineTransform.getRotateInstance(java.lang.Math.toRadians(retry_count*ROTATION_INCREMENT), hypot/2, hypot/2)
+        transform.translate((hypot-width)/2, (hypot-height)/2)
+        transform
+      end
+
+      def cropped(x: 0, y: 0, width: 1, height: 1)
+        i_width = image.getWidth
+        i_height = image.getHeight
+        image.getSubimage(x*i_width, y*i_height, width*i_width, height*i_height)
       end
     end
   end

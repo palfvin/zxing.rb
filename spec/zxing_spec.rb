@@ -130,4 +130,26 @@ describe ZXing do
     end
   end
 
+  describe ".decode with options" do
+    subject { ZXing.decode(file, options) }
+    let(:file) { fixture_image("example")}
+
+    context "that select a valid cropping of a single code" do
+      let(:options) { {crop: {x: 0.1, y: 0.1, width: 0.8, height: 0.8}} }
+      it { should == "example" }
+    end
+
+    context "that select an invalid cropping of a single code" do
+      let(:options) { {crop: {x: 0.5, y: 0.5, width: 0.3, height: 0.4}} }
+      it { should be_nil }
+    end
+
+    context "that request retry with rotation on image with data that looks like finder code" do
+      let(:options) { {rotate_and_retry_on_failure: true} }
+      let(:file) { fixture_image("62_canyon") }
+      it { should == "COVER:\n62 CANYON TERRACE RD" }
+    end
+
+  end
+
 end
