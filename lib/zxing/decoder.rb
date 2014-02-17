@@ -1,5 +1,4 @@
 require 'uri'
-require 'pry'
 
 module ZXing
   if RUBY_PLATFORM != 'java'
@@ -135,10 +134,11 @@ module ZXing
         transform
       end
 
-      def cropped(x: 0, y: 0, width: 1, height: 1)
+      def cropped(options)  # Convert to named parameters when 2.0 is supported in JRuby
+        o = {x: 0, y: 0, width: 1, height: 1}.merge(options)
         i_width = image.getWidth
         i_height = image.getHeight
-        image.getSubimage(x*i_width, y*i_height, width*i_width, height*i_height)
+        image.getSubimage(o[:x]*i_width, o[:y]*i_height, o[:width]*i_width, o[:height]*i_height)
       end
     end
   end
