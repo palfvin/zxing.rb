@@ -29,7 +29,7 @@ class PDFHelper
   end
 
   def convert_pdf_to_png(pdf_filename, png_filename, rotation = 0)  # rotation doesn't work!!!
-    options = "-dSAFER -dBATCH -dNOPAUSE -r200 -sDEVICE=pngmono -dAutoRotatePages=/None"
+    options = "-dSAFER -dBATCH -dNOPAUSE -r200 -sDEVICE=pnggray -dAutoRotatePages=/None"
     code = %Q(-c "<</Orientation 2>>" setpagedevice #{rotation} rotate)
     exec_command([gs, options, "-sOutputFile=#{png_filename}", code, "-f #{pdf_filename}"])
     png_filename

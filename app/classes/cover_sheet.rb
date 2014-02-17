@@ -8,6 +8,8 @@ class CoverSheet
 
   NULL_RECOGNIZER = /(.*)/m
 
+  @@mutex = Mutex.new
+
   class << self
 
   def default_recognizer ; DEFAULT_RECOGNIZER ; end
@@ -34,8 +36,10 @@ class CoverSheet
     file = Tempfile.new([base, ext])
     filename = file.path
     file.close
-    $temp_files ||= []
-    $temp_files << file
+    @@mutex.synchronize do
+      $temp_files ||= []
+      $temp_files << file
+    end
     filename
   end
 
@@ -58,14 +62,12 @@ class CoverSheet
   alias_method :ocr_pdf, :decode_pdf
 
   def write_tiff(text, filename = tmpfile('.tiff'), customize = DEFAULT_FORMATTER)
-    puts self, method(:write_pdf)
     self.write_pdf(text, pdf_filename = tmpfile('.pdf'), customize)
     PDFHelper.convert_pdf_to_single_tiff(pdf_filename, filename)
     filename
   end
 
   def write_pdf(text, filename = tmpfile('.pdf'), customize = DEFAULT_FORMATTER)
-    puts self, method(:write_tiff)
     self.write_tiff(text, tiff_filename = tmpfile('.tiff'), customize)
     PDFHelper.convert_tiff_to_pdf(tiff_filename, filename)
     filename

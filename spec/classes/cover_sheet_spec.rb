@@ -13,7 +13,7 @@ end
 def sample_text ; 'path "Sewer Laterals/Properties and some additional text as well"'.upcase ; end
 
 def confirm_tiff_text(filename, text, cover_sheet)
-  puts "recognize", recognized_text = cover_sheet.decode_tiff_page(filename, normalize: true)
+  recognized_text = cover_sheet.decode_tiff_page(filename, normalize: true)
   cover_text = CoverSheet.cover_from_text(text)
   expect(CoverSheet.normalized_eql(cover_text, recognized_text)).to be_true
 end

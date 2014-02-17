@@ -4,14 +4,17 @@ source 'https://rubygems.org'
 gem 'rails', '4.0.1'
 gem 'google_drive'
 gem 'rmagick4j', require: false
-gem 'qrio'
-gem 'zxing'
-gem 'jruby-jars'
+gem 'qrio', require: false
+gem 'zxing', git: 'git://github.com/palfvin/zxing.rb.git', require: false
+gem 'peach'
+# gem 'jruby-jars'
 gem 'therubyrhino'
 
 group :development, :test do
   gem 'activerecord-jdbcsqlite3-adapter'
   gem 'pry'
+  # gem 'newrelic_rpm'
+  # gem 'perftools.rb'
   # gem 'pry-byebug'
   # gem 'pry-stack_explorer'
   gem 'rqrcode'

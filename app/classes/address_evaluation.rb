@@ -22,8 +22,12 @@ module AddressEvaluation
 
     SelectedCoverSheet = QRCoverSheet
 
+    def address_temp_file(filename)
+      File.join(Rails.root, 'tmp', filename)
+    end
+
     def get_addresses
-      addresses_filename = '/Users/palfvin/avlats/tmp/addresses.csv'
+      addresses_filename = address_temp_file('addresses.csv')
       if File.exists?(addresses_filename)
         addresses = CSV.read(addresses_filename).flatten
       else
@@ -35,31 +39,31 @@ module AddressEvaluation
       addresses[address_subset]
     end
 
-    def address_subset ; (0..-1) ; end
+    def address_subset ; (240..250) ; end
 
     def get_cover_sheets
-      addresses_covers_filename = '/Users/palfvin/avlats/tmp/addresses.pdf'
-      unless File.exists?(addresses_covers_filename)
-        PDFHelper.merge_pdf_files(get_addresses.collect {|addr| puts addr; SelectedCoverSheet.write_pdf(addr)}, addresses_covers_filename)
+      addresses_covers_filename = address_temp_file('addresses.pdf')
+      if !File.exists?(addresses_covers_filename) || ALWAYS_GENERATE
+        PDFHelper.merge_pdf_files(get_addresses.collect {|addr| SelectedCoverSheet.write_pdf(addr)}, addresses_covers_filename)
       end
       addresses_covers_filename
     end
 
+    ALWAYS_GENERATE = false
     ALWAYS_DECODE = true
 
     def get_decoded_addresses
-      decoded_addresses_filename = '/Users/palfvin/avlats/tmp/decoded_addresses.txt'
+      decoded_addresses_filename = address_temp_file('decoded_addresses.txt')
       if File.exists?(decoded_addresses_filename) && !ALWAYS_DECODE
         decoded_addresses = IO.read(decoded_addresses_filename).split("\n")
       else
-        decoded_addresses = SelectedCoverSheet.decode_pdf(get_cover_sheets).map { |text| puts text; CoverSheet.text_from_cover(text) }
+        decoded_addresses = SelectedCoverSheet.decode_pdf(get_cover_sheets).map { |text| CoverSheet.text_from_cover(text) }
         File.write(decoded_addresses_filename, decoded_addresses.join("\n"))
       end
       decoded_addresses
     end
 
     def evaluate_addresses
-
       addresses = get_addresses
       decoded_addresses = get_decoded_addresses
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "sheet processor" do
+describe "sheet processor", slow: true do
   let(:page_identifiers) {['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen'].collect(&:upcase)}
   let(:doc_length) {14}
   let(:cover_indexes) {[0,3,5,9,10]}

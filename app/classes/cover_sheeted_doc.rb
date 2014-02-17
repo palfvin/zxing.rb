@@ -14,7 +14,6 @@ class CoverSheetedDoc
     binding.pry if @sets.nil?
     @sets.each do |text, range|
       set_pdf = range ? @pdf_helper.extract_pdf(@filename, range) : nil
-      puts "Text is: #{text}"
       set_proc.(CoverSheet.text_from_cover(text, @cover_sheet_pattern), set_pdf)
     end
   end
@@ -32,7 +31,7 @@ class CoverSheetedDoc
     @sets = []
     cover_indexes[0...-1].each_with_index.collect do |c, i|
       range = c+1..cover_indexes[i+1]-1
-      range = nil if range.size == 0
+      range = nil if range.to_a.size == 0  # change back to range.size when JRuby supports it
       @sets << [sheets[c], range]
     end
   end

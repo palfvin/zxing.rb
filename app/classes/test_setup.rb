@@ -6,9 +6,9 @@ class TestSetup
       examples_root+name+'-'+type.capitalize+'.pdf'
     end
 
-    def examples_root ; "#{Dir.home}/avlats/spec/examples/" ; end
+    def examples_root ; File.join(Rails.root, 'spec/examples/') ; end
 
-    def repository_properties_path ; "Sewer Laterals/Properties" ; end
+    def repository_properties_path ; "/Sewer Laterals/Properties" ; end
 
     def folder_cover_path ; example_path('PropertyFolder', 'cover') ; end
 
@@ -25,6 +25,8 @@ class TestSetup
     end
 
     def example_doc_names ; ['Report','LetterToOwner','CertifiedReceipts','Invoice'] ; end
+
+    def root_folder ; 'scans_test' ; end
 
     def make_integrated_pdf
       make_cover_sheets

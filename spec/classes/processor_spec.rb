@@ -3,14 +3,22 @@ require 'spec_helper'
 def check_repository_contents
   folder_path = TestSetup.dummy_property_path
   expect(docupository.folder_exists?(folder_path)).to be true
-  docupository.change_working_directory(folder_path)
+  docupository.folder(folder_path)
   TestSetup.example_doc_names.each do |name|
     expect(docupository.file_exists?(name))
   end
 end
 
-describe "basic avlats operation" do
-  let(:docupository) { DocFiler.new(ENV['COA_SCANS_NAME'], ENV['COA_SCANS_PASSWORD']) }
+describe "basic avlats operation", slow: true do
+
+  let(:docupository) { @docupository }
+
+  before(:all) do
+    @docupository = DocFiler.new(ENV['COA_SCANS_NAME'], ENV['COA_SCANS_PASSWORD'], root: TestSetup.root_folder)
+    @docupository.delete_folder_contents
+    @docupository.add_folder_path(TestSetup.dummy_property_path)
+    @docupository.folder('/')
+  end
 
   describe "pdf_processor" do
     let(:integrated_file) { TestSetup.integrated_pdf_filename }
