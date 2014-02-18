@@ -77,7 +77,7 @@ module ZXing
         puts "Failed on try #{retry_count}"
         self.retry_count += 1
         retry if retry_count <= MAX_RETRIES
-        raise com.google.zxing.NotFoundException
+        raise UndecodableError
       end
 
       def decode_all
